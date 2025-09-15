@@ -57,7 +57,7 @@ const SettingsPage: React.FC<{ onBack: () => void; settings: TimerSettings; onCh
     <div className="card">
       <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 style={{ margin: 0 }}>Réglages personnalisés</h2>
-        <button className="secondary" onClick={onBack}>← Retour</button>
+        <button className="secondary" onClick={onBack}>←</button>
       </div>
       <div className="settings" style={{ marginTop: 12 }}>
         <div className="row">

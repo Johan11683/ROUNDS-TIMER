@@ -1,5 +1,13 @@
-import React from 'react';
-import { RoundConfig } from '../hooks/useRoundTimer';
+import React from "react";
+import { DndContext, closestCenter, useSensor, useSensors, MouseSensor, TouchSensor, DragEndEvent } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { RoundConfig } from "../hooks/useRoundTimer";
 
 interface CustomSettingsProps {
   rounds: RoundConfig[];
@@ -8,79 +16,112 @@ interface CustomSettingsProps {
   onAddRound(): void;
 }
 
-export const CustomSettings: React.FC<CustomSettingsProps> = ({ rounds, onChange, onStartAt, onAddRound }) => {
-  const update = (i: number, key: keyof RoundConfig, value: number) => {
-    const next = rounds.slice();
-    next[i] = { ...next[i], [key]: value } as RoundConfig;
-    onChange(next);
+const SortableItem: React.FC<{
+  id: string;
+  index: number;
+  round: RoundConfig;
+  rounds: RoundConfig[];
+  onChange: (next: RoundConfig[]) => void;
+}> = ({ id, index, round, rounds, onChange }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id });
+
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    cursor: "grab",
   };
 
-  // drag & drop (desktop + long press on mobile ~1s)
-  let pressTimer: number | null = null;
-  const enableDragAfterHold = (el: HTMLElement) => {
-    if (!el) return;
-    el.draggable = false;
-    el.addEventListener('touchstart', () => {
-      pressTimer = window.setTimeout(() => { el.draggable = true; }, 800);
-    }, { passive: true });
-    el.addEventListener('touchend', () => {
-      if (pressTimer) window.clearTimeout(pressTimer);
-      el.draggable = false;
-    });
-  };
-
-  const onDragStart = (e: React.DragEvent<HTMLDivElement>, index: number) => {
-    e.dataTransfer.setData('text/plain', String(index));
-    (e.currentTarget as HTMLDivElement).classList.add('dragging');
-  };
-  const onDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
-    (e.currentTarget as HTMLDivElement).classList.remove('dragging');
-  };
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, target: number) => {
-    e.preventDefault();
-    const from = Number(e.dataTransfer.getData('text/plain'));
-    if (Number.isNaN(from)) return;
+  const update = (key: keyof RoundConfig, value: number) => {
     const next = rounds.slice();
-    const [moved] = next.splice(from, 1);
-    next.splice(target, 0, moved);
+    next[index] = { ...next[index], [key]: value };
     onChange(next);
   };
-  const allow = (e: React.DragEvent) => e.preventDefault();
 
   return (
-    <div className="custom">
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
-        <button className="btn-icon" onClick={onAddRound}>+</button>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="custom__row">
+      <button
+        className="danger btn-icon small"
+        onClick={() => {
+          const next = rounds.slice();
+          next.splice(index, 1);
+          onChange(next);
+        }}
+      >
+        ✕
+      </button>
+      <div className="grow">
+        <label>round {index + 1}</label>
+        <input
+          type="number"
+          min={10}
+          max={1800}
+          step={5}
+          value={round.workSeconds}
+          onChange={(e) => update("workSeconds", Number(e.target.value))}
+        />
       </div>
-      <div className="custom__scroller">
-        {rounds.map((r, i) => (
-          <div
-            key={i}
-            className="custom__row"
-            onDragOver={allow}
-            onDrop={(e) => onDrop(e, i)}
-            onDragStart={(e) => onDragStart(e, i)}
-            onDragEnd={onDragEnd}
-            ref={(el) => el && enableDragAfterHold(el)}
-          >
-            <button className="danger btn-icon small" onClick={() => {
-              const next = rounds.slice();
-              next.splice(i, 1);
-              onChange(next);
-            }}>✕</button>
-            <div className="grow">
-              <label>round {i + 1}</label>
-              <input type="number" min={10} max={1800} step={5} value={r.workSeconds} onChange={(e) => update(i, 'workSeconds', Number(e.target.value))} />
-            </div>
-            <div className="grow">
-              <label>pause</label>
-              <input type="number" min={0} max={900} step={5} value={r.restSeconds} onChange={(e) => update(i, 'restSeconds', Number(e.target.value))} />
-            </div>
-          </div>
-        ))}
+      <div className="grow">
+        <label>pause</label>
+        <input
+          type="number"
+          min={0}
+          max={900}
+          step={5}
+          value={round.restSeconds}
+          onChange={(e) => update("restSeconds", Number(e.target.value))}
+        />
       </div>
     </div>
   );
 };
 
+export const CustomSettings: React.FC<CustomSettingsProps> = ({
+  rounds,
+  onChange,
+  onAddRound,
+}) => {
+  // capteurs avec délai d'activation de 1s
+  const mouseSensor = useSensor(MouseSensor, { activationConstraint: { delay: 200, tolerance: 5 } });
+  const touchSensor = useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } });
+  const sensors = useSensors(mouseSensor, touchSensor);
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = rounds.findIndex((_, i) => String(i) === active.id);
+      const newIndex = rounds.findIndex((_, i) => String(i) === over.id);
+      const next = arrayMove(rounds, oldIndex, newIndex);
+      onChange(next);
+    }
+  };
+
+  return (
+    <div className="custom">
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
+        <button className="btn-icon" onClick={onAddRound}>
+          +
+        </button>
+      </div>
+      <div className="custom__scroller">
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={rounds.map((_, i) => String(i))}
+            strategy={verticalListSortingStrategy}
+          >
+            {rounds.map((r, i) => (
+              <SortableItem
+                key={i}
+                id={String(i)}
+                index={i}
+                round={r}
+                rounds={rounds}
+                onChange={onChange}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </div>
+    </div>
+  );
+};

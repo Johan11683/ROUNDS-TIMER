@@ -1,19 +1,35 @@
 @use "sass:color";
 
+/* 🎨 Variables Sass */
+$bg: #0f1220;
+$card: #171a2b;
+$text: #e6e9f5;
+$accent: #00d1b2;
+$danger: #ff5a7a;
+$warn: #ffb86b;
+$ok: #28d17c;
+
+/* 🎨 Injection en CSS vars */
 :root {
-  --bg: #0f1220;
-  --card: #171a2b;
-  --text: #e6e9f5;
-  --accent: #00d1b2;
-  --danger: #ff5a7a;
-  --warn: #ffb86b;
-  --ok: #28d17c;
+  --bg: #{$bg};
+  --card: #{$card};
+  --text: #{$text};
+  --accent: #{$accent};
+  --danger: #{$danger};
+  --warn: #{$warn};
+  --ok: #{$ok};
   --space: clamp(10px, 2.5vw, 24px);
   --gap: clamp(10px, 2.2vw, 24px);
-  --btn: clamp(56px, 9vw, 84px);
-  --btn-fs: clamp(24px, 3.5vw, 36px);
+
+  /* boutons principaux un peu plus grands (toucher mobile) */
+  --btn: clamp(68px, 11vw, 96px);
+  --btn-fs: clamp(28px, 4vw, 40px);
+
   --btn-small: clamp(36px, 6vw, 48px);
   --btn-small-fs: clamp(14px, 2.8vw, 24px);
+
+  /* hauteur unifiée pour les petits inputs */
+  --input-h: 48px;
 }
 
 * { box-sizing: border-box; }
@@ -21,7 +37,7 @@ html, body, #root { height: 100%; }
 body {
   margin: 0;
   font-family: 'Bebas Neue', Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background: radial-gradient(1200px 600px at 80% -10%, #1a1f3b, transparent), var(--bg);
+  background: var(--bg);
   color: var(--text);
 }
 
@@ -58,14 +74,19 @@ body {
   place-items: center;
 }
 
+/* Conteneur neutre */
 .card {
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 16px;
-  padding: clamp(16px, 3vw, 32px);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   width: 100%;
-  max-width: min(1040px, 96vw);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  height: 100%;
+  padding: clamp(16px, 3vw, 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -81,25 +102,112 @@ button {
   border-radius: 10px;
   font-weight: 700;
 }
-.btn-icon { width: var(--btn); height: var(--btn); padding: 0; display: inline-grid; place-items: center; font-size: var(--btn-fs); }
-.btn-icon.small { width: var(--btn-small); height: var(--btn-small); font-size: var(--btn-small-fs); border-radius: 8px; }
+
+.btn-icon {
+  width: var(--btn);
+  height: var(--btn);
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  font-size: var(--btn-fs);
+}
+.btn-icon.small {
+  width: var(--btn-small);
+  height: var(--btn-small);
+  font-size: var(--btn-small-fs);
+  border-radius: 8px;
+}
+
 .btn-play { background: var(--ok); color: #0a0c16; }
 .btn-pause { background: var(--warn); color: #0a0c16; }
 .btn-icon:disabled { opacity: 0.5; cursor: not-allowed; }
 
-
 button.secondary { background: #2b3152; color: var(--text); }
 button.danger { background: var(--danger); color: #fff; }
 
-input[type="number"], select {
-  width: 100%;
-  padding: 10px 12px;
-  background: #0f1326;
-  border: 1px solid #2b3152;
-  color: var(--text);
-  border-radius: 10px;
+/* =========================
+   Settings : pile compacte
+   ========================= */
+.settings.settings--stack {
+  width: clamp(260px, 70vw, 360px);
+  margin-inline: auto;
 }
 
+/* 1) Chaque .row.compact s'affiche en colonne (un champ par ligne) */
+.settings.settings--stack .row.compact {
+  display: grid;
+  grid-template-columns: 1fr;    /* pile verticale */
+  justify-items: start;
+  row-gap: 14px;
+  width: 100%;
+}
+
+/* 2) La première .row (rounds + reset) a 2 colonnes */
+.settings.settings--stack .row.compact:first-of-type {
+  grid-template-columns: auto auto;
+  column-gap: 12px;
+  align-items: end;
+}
+
+/* Bloc input : chiffre au-dessus, label en pilule dessous */
+.input-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.input-focus {
+  /* 3 chiffres visibles + padding, sans débordement */
+  width: calc(3ch + 12px);
+  height: var(--input-h);
+  padding: 0 6px;
+  line-height: 1;
+  text-align: center;
+  font-size: clamp(24px, 7vw, 34px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .5px;
+
+  background: #0f1326;
+  border: 1px solid #2b3152;
+  border-radius: 10px;
+  color: var(--text);
+
+  /* supprime les flèches natives */
+  -moz-appearance: textfield;
+  appearance: none;
+}
+.input-focus::-webkit-inner-spin-button,
+.input-focus::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Label sous l'input (style “pilule”) */
+.input-block label {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #2b3152;
+  color: var(--text);
+  font-size: .9rem;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  font-weight: 900;
+  opacity: .95;
+}
+
+/* Bouton reset rounds : même hauteur que l'input */
+.btn-reset-rounds {
+  height: var(--input-h);
+  width: var(--input-h);
+  border-radius: 10px;
+  background: var(--accent);
+  color: #0a0c16;
+  display: grid;
+  place-items: center;
+  font-size: 1.2rem;
+}
+
+/* Timer */
 .timer__display {
   font-variant-numeric: tabular-nums;
   display: grid;
@@ -123,9 +231,7 @@ input[type="number"], select {
 .timer__circle { display: grid; place-items: center; margin: 6px 0 10px; }
 .timer__circle svg { width: clamp(320px, 80vw, 560px); height: auto; }
 
-.circular {
-  position: relative;
-}
+.circular { position: relative; }
 .circular.running .circular__progress { stroke: var(--danger); filter: drop-shadow(0 0 12px rgba(255,90,122,0.35)); }
 .circular.paused .circular__progress { stroke: var(--ok); filter: drop-shadow(0 0 12px rgba(40,209,124,0.35)); }
 .circular__center {
@@ -141,39 +247,38 @@ input[type="number"], select {
 }
 .circular__colon { opacity: 0.7; padding: 0 6px; }
 
-
-.timer__label { opacity: 0.75; margin-bottom: 8px; }
-.timer__big { font-size: 120px; text-align: center; }
-.timer__sub { font-size: 18px; opacity: 0.8; }
-
 .settings { display: grid; gap: 12px; margin-top: 16px; }
 .custom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; }
 .custom__scroller { max-height: 260px; overflow: auto; display: grid; gap: 8px; padding-right: 6px; }
+
+.custom__scroller::-webkit-scrollbar { width: 10px; }
+.custom__scroller::-webkit-scrollbar-track { background: var(--bg); border-radius: 6px; }
+.custom__scroller::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 6px; border: 2px solid var(--bg); }
+.custom__scroller::-webkit-scrollbar-thumb:hover { background: color.scale($accent, $lightness: -10%); }
+.custom__scroller { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+
 .custom__row { display: grid; grid-template-columns: auto 1fr 1fr; gap: 10px; align-items: end; background: #111428; padding: 10px; border-radius: 12px; }
 .custom__row.dragging { outline: 2px dashed rgba(255,255,255,0.25); }
 .custom__row .danger { padding: 0; }
 .custom__row .danger.btn-icon.small { background: #55222a; color: #fff; }
+
 .controls { display: flex; gap: calc(var(--gap) * 0.75); margin-top: 16px; flex-wrap: wrap; justify-content: center; }
 .controls.controls--main { justify-content: center; gap: var(--gap); }
 .fullscreen .controls.controls--main { gap: calc(var(--gap) * 1.25); }
 
-/* Ligne de contrôles avec bouton auxiliaire à droite */
-.controls-row { position: relative; }
-.controls-reset { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-.controls-reset .btn-icon { width: calc(var(--btn) * 0.7); height: calc(var(--btn) * 0.7); font-size: calc(var(--btn-fs) * 0.7); }
-
-.phase--work { outline: 2px solid color.mix(#00d1b2, #ffffff, 70%); }
-.phase--rest { outline: 2px solid color.mix(#ff5a7a, #ffffff, 70%); }
-
-/* Mode plein écran: la carte occupe ~90% du viewport et est centrée */
-.fullscreen .app__main { padding: max(2vw, 10px); }
-.fullscreen .card {
-  width: 90vw;
-  height: 90vh;
-  max-width: none;
-  display: grid;
-  place-items: center;
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap);
+  flex-wrap: wrap;
+  margin-top: 16px;
 }
+
+.phase--work { outline: 2px solid color.mix($accent, #ffffff, 70%); }
+.phase--rest { outline: 2px solid color.mix($danger, #ffffff, 70%); }
+
+.fullscreen .app__main { padding: max(2vw, 10px); }
+.fullscreen .card { width: 100%; height: 100%; max-width: none; display: grid; place-items: center; }
 .fullscreen .timer__circle { margin: 0; }
 .fullscreen .circular__center { font-size: clamp(100px, 23vw, 240px); }
 
@@ -184,11 +289,9 @@ input[type="number"], select {
 
 @media (max-width: 320px) {
   :root {
-    --btn: clamp(50px, 22vw, 68px);
-    --btn-fs: clamp(20px, 7vw, 28px);
+    --btn: clamp(58px, 20vw, 72px);
+    --btn-fs: clamp(22px, 7vw, 30px);
     --gap: clamp(8px, 5vw, 14px);
   }
   .timer__phase { font-size: clamp(20px, 12vw, 72px); }
 }
-
-
