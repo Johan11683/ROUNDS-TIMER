@@ -77,6 +77,7 @@ body {
   flex-direction: column;
   align-items: center;   // horizontalement centré
   justify-content: flex-start; // collé en haut
+  
 }
 
 /* Conteneur neutre */
@@ -137,36 +138,31 @@ button.secondary { background: #2b3152; color: var(--text); }
 button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 
 /* =========================
-   Settings : pile compacte
+   Settings : grille compacte
    ========================= */
 .settings.settings--stack {
   width: clamp(260px, 70vw, 360px);
   margin-inline: auto;
   display: grid;
-  justify-items: center;   /* ⬅️ centre tout le contenu */
+  justify-items: center;
 }
 
-/* 1) Chaque .row.compact s'affiche en colonne (un champ par ligne) */
+/* Une seule row : grille 2 colonnes */
 .settings.settings--stack .row.compact {
   display: grid;
-  grid-template-columns: 1fr;    /* pile verticale */
-  justify-items: center;         /* ⬅️ centre les éléments de la ligne */
-  row-gap: 14px;
+  grid-template-columns: 1fr 1fr; /* 2 colonnes */
+  gap: 16px;
+  justify-items: center;
   width: 100%;
 }
 
-/* 2) La première .row (rounds + reset) : bouton au-dessus de l’input */
-.settings.settings--stack .row.compact:first-of-type {
-  grid-template-columns: 1fr;    /* une seule colonne */
-  grid-auto-rows: auto;
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
-  row-gap: 12px;
+/* Bouton reset : collé sous l’input Rounds */
+.settings.settings--stack .row.compact .btn-reset-rounds {
+  grid-column: 1;  /* même colonne que Rounds */
+  grid-row: 2;     /* en dessous */
+  justify-self: center;
 }
-/* Positionnement vertical explicite */
-.settings.settings--stack .row.compact:first-of-type .btn-reset-rounds { grid-row: 1; justify-self: center; }
-.settings.settings--stack .row.compact:first-of-type .input-block { grid-row: 2; justify-self: center; }
+
 
 /* === Input + Label : largeur EXACTEMENT identique === */
 .input-block {
@@ -250,6 +246,7 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   display: grid;
   place-items: center;
   font-size: 1.2rem;
+  margin-top: 8px
 }
 
 /* Timer */
@@ -274,7 +271,12 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 .fullscreen .timer__phase { font-size: clamp(24px, 9vw, 96px); }
 .timer__rounds { opacity: 0.8; }
 .timer__circle { display: grid; place-items: center; margin: 6px 0 10px; }
-.timer__circle svg { width: clamp(320px, 80vw, 560px); height: auto; }
+.timer__circle svg {
+  width: clamp(220px, 65vw, 400px); /* plus petit min et max */
+  height: auto;
+}
+
+
 
 .circular { position: relative; }
 .circular.running .circular__progress { stroke: var(--danger); filter: drop-shadow(0 0 12px rgba(255,90,122,0.35)); }
@@ -293,21 +295,61 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 .circular__colon { opacity: 0.7; padding: 0 6px; }
 
 .settings { display: grid; gap: 12px; margin-top: 16px; }
-.custom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; }
-.custom__scroller { max-height: 65vh; overflow: auto; display: grid; gap: 8px; padding-right: 6px; }
+.custom__row {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr; /* 1 colonne fixe pour le bouton, 2 colonnes égales */
+  gap: 16px;
+  align-items: center;
+  background: #111428;
+  padding: 12px;
+  border-radius: 12px;
+}
 
-.custom__scroller::-webkit-scrollbar { width: 10px; }
-.custom__scroller::-webkit-scrollbar-track { background: var(--bg); border-radius: 6px; }
-.custom__scroller::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 6px; border: 2px solid var(--bg); }
-.custom__scroller::-webkit-scrollbar-thumb:hover { background: color.scale($accent, $lightness: -10%); }
-.custom__scroller { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+/* cellule round/pause = largeur égale */
+.custom__row .grow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%; /* prend la largeur dispo dans la grille */
+}
 
-.custom__row { display: grid; grid-template-columns: auto 1fr 1fr; gap: 10px; align-items: end; background: #111428; padding: 10px; border-radius: 12px; }
-.custom__row.dragging { outline: 2px dashed rgba(255,255,255,0.25); }
-.custom__row .danger { padding: 0; }
-.custom__row .danger.btn-icon.small { background: #55222a; color: #fff; }
+/* blocs valeur : même largeur et hauteur */
+.custom__row .preview-block {
+  width: 100%;          /* occupe toute la colonne */
+  min-width: 100px;     /* garde une largeur minimale identique */
+  height: 48px;         /* hauteur uniforme */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #22263d;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+}
 
-.controls { display: flex; gap: calc(var(--gap) * 0.75); margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+/* labels alignés aussi */
+.custom__row label {
+  text-align: center;
+  width: 100%;
+}
+
+/* bouton suppression */
+.custom__row .danger {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom__row .danger.btn-icon.small {
+  background: #55222a;
+  color: #fff;
+}
+
+
+.controls { display: flex; gap: calc(var(--gap) * 0.75); flex-wrap: wrap; justify-content: center; }
 .controls.controls--main { justify-content: center; gap: var(--gap); }
 .fullscreen .controls.controls--main { gap: calc(var(--gap) * 1.25); }
 
@@ -316,7 +358,6 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   justify-content: center;
   gap: var(--gap);
   flex-wrap: wrap;
-  margin-top: 16px;
 }
 
 .phase--work { outline: 2px solid color.mix($accent, #ffffff, 70%); }

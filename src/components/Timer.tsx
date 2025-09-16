@@ -182,68 +182,72 @@ export const Timer: React.FC<{
       </div>
 
       {/* Controls */}
-      <div className="controls controls--main controls-row" style={{ marginTop: 16 }}>
-        <button
-          className={`btn-icon main ${
-            timer.state.isRunning ? "btn-pause" : "btn-play"
-          }`}
-          onClick={() =>
-            timer.state.isRunning ? timer.pause() : timer.start()
-          }
-        >
-          {timer.state.isRunning ? "⏸" : "▶"}
-        </button>
+<div className="controls controls--main controls-row">
+  <button
+    className={`btn-icon main ${
+      timer.state.isRunning ? "btn-pause" : "btn-play"
+    }`}
+    onClick={() =>
+      timer.state.isRunning ? timer.pause() : timer.start()
+    }
+  >
+    {timer.state.isRunning ? "⏸" : "▶"}
+  </button>
 
-        <button className="btn-icon main secondary" onClick={timer.skip}>
-          ➤
-        </button>
+  <button className="btn-icon main secondary" onClick={timer.skip}>
+    ➤
+  </button>
 
-        <button
-          className="btn-icon main danger"
-          title="Réinitialiser"
-          onClick={handleTimerReset}
-        >
-          ↻
-        </button>
-      </div>
+  <button
+    className="btn-icon main danger"
+    title="Réinitialiser"
+    onClick={handleTimerReset}
+  >
+    ↻
+  </button>
+</div>
+
+{/* Bouton reset rounds sous les autres */}
+<div className="controls controls--rounds">
+  <button
+    className="btn-reset-rounds"
+    title="Reset rounds"
+    onClick={handleRoundsReset}
+  >
+    ⟲
+  </button>
+</div>
+
+
+      
 
       {/* Settings */}
       {!fullscreenMode && (
         <div className="settings settings--stack">
-          {/* Row 1 : rounds + reset */}
-          <div className="row compact">
-            <div className="input-block">
-              <input
-                type="number"
-                min={1}
-                max={30}
-                value={roundsInput}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setRoundsInput(val);
-
-                  const num = parseInt(val, 10);
-                  if (!isNaN(num) && num > 0) {
-                    timer.setSettings({ totalRounds: num });
-                  }
-                }}
-                className="input-focus"
-              />
-              <label>Rounds</label>
-            </div>
-
-            <button
-              className="btn-reset-rounds"
-              title="Reset rounds"
-              onClick={handleRoundsReset}
-            >
-              ⟲
-            </button>
-          </div>
-
-          {/* Row 2 : champs en MM:SS */}
           {(!settings.rounds || settings.rounds.length === 0) && (
             <div className="row compact">
+              {/* Rounds */}
+              <div className="input-block">
+                <input
+                  type="number"
+                  min={1}
+                  max={30}
+                  value={roundsInput}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setRoundsInput(val);
+
+                    const num = parseInt(val, 10);
+                    if (!isNaN(num) && num > 0) {
+                      timer.setSettings({ totalRounds: num });
+                    }
+                  }}
+                  className="input-focus"
+                />
+                <label>Rounds</label>
+              </div>
+
+              {/* Durée */}
               <MmssInput
                 label="Durée"
                 seconds={timer.settings.workSeconds}
@@ -251,6 +255,8 @@ export const Timer: React.FC<{
                   timer.setSettings({ workSeconds: sec })
                 }
               />
+
+              {/* Repos */}
               <MmssInput
                 label="Repos"
                 seconds={timer.settings.restSeconds}
@@ -258,6 +264,8 @@ export const Timer: React.FC<{
                   timer.setSettings({ restSeconds: sec })
                 }
               />
+
+              {/* Pré-compte */}
               <MmssInput
                 label="Pré-compte"
                 seconds={timer.settings.countdownSeconds ?? 0}
@@ -265,13 +273,15 @@ export const Timer: React.FC<{
                   timer.setSettings({ countdownSeconds: sec })
                 }
               />
+
+              
             </div>
           )}
 
           {/* Custom summary */}
           {settings.rounds && settings.rounds.length > 0 && (
-            <div className="custom" style={{ marginTop: 8 }}>
-              <div className="custom__scroller" style={{ maxHeight: 160 }}>
+            <div className="custom">
+              <div className="custom__scroller" style={{ maxHeight: 160, width: '30vh' }}>
                 {settings.rounds.map((r: RoundConfig, i: number) => (
                   <div
                     key={i}
