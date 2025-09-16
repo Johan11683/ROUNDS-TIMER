@@ -32,7 +32,7 @@ $ok: #28d17c;
   --input-h: 48px;
 
   /* 📏 Largeur par défaut des champs numériques (4 chiffres + padding) */
-  --field-w: calc(14ch + 20px);
+  --field-w: calc(16ch + 20px);
 }
 
 * { box-sizing: border-box; }
@@ -73,8 +73,10 @@ body {
 
 .app__main {
   padding: var(--space);
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   // horizontalement centré
+  justify-content: flex-start; // collé en haut
 }
 
 /* Conteneur neutre */
@@ -85,11 +87,17 @@ body {
   box-shadow: none;
   width: 100%;
   height: 100%;
-  padding: clamp(16px, 3vw, 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+ }
+
+/* ✅ Variante pour la page réglages */
+.card--settings {
+  height: auto;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding-top: 16px;
 }
 
 .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
@@ -126,7 +134,7 @@ button {
 .btn-icon:disabled { opacity: 0.5; cursor: not-allowed; }
 
 button.secondary { background: #2b3152; color: var(--text); }
-button.danger { background: var(--danger); color: #fff; }
+button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 
 /* =========================
    Settings : pile compacte
@@ -286,7 +294,7 @@ button.danger { background: var(--danger); color: #fff; }
 
 .settings { display: grid; gap: 12px; margin-top: 16px; }
 .custom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; }
-.custom__scroller { max-height: 260px; overflow: auto; display: grid; gap: 8px; padding-right: 6px; }
+.custom__scroller { max-height: 65vh; overflow: auto; display: grid; gap: 8px; padding-right: 6px; }
 
 .custom__scroller::-webkit-scrollbar { width: 10px; }
 .custom__scroller::-webkit-scrollbar-track { background: var(--bg); border-radius: 6px; }

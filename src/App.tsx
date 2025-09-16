@@ -51,35 +51,90 @@ const App: React.FC = () => {
   );
 };
 
-const SettingsPage: React.FC<{ onBack: () => void; settings: TimerSettings; onChangeSettings: (s: TimerSettings) => void }> = ({ onBack, settings, onChangeSettings }) => {
-  const rounds: RoundConfig[] = Array.from({ length: settings.totalRounds }, (_, i) => settings.rounds?.[i] ?? { workSeconds: settings.workSeconds, restSeconds: settings.restSeconds });
+const SettingsPage: React.FC<{
+  onBack: () => void;
+  settings: TimerSettings;
+  onChangeSettings: (s: TimerSettings) => void;
+}> = ({ onBack, settings, onChangeSettings }) => {
+  const rounds: RoundConfig[] = Array.from(
+    { length: settings.totalRounds },
+    (_, i) =>
+      settings.rounds?.[i] ?? {
+        workSeconds: settings.workSeconds,
+        restSeconds: settings.restSeconds,
+      }
+  );
+
   return (
     <div className="card">
-      <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2 style={{ margin: 0 }}>Réglages personnalisés</h2>
-        <button className="secondary" onClick={onBack}>←</button>
+      {/* Titre + bouton retour */}
+      <button className="secondary btn-icon" onClick={onBack}>
+          ←
+        </button>
+      <div
+        className="row"
+        style={{ justifyContent: "space-between", alignItems: "center" }}
+      >
+        <h2 className="settings__title">Réglages personnalisés</h2>
+        
       </div>
+
       <div className="settings" style={{ marginTop: 12 }}>
-        <div className="row">
-          <div className="grow">
-            <label>Nombre de rounds</label>
-            <input type="number" min={1} max={50} value={settings.totalRounds} onChange={(e) => onChangeSettings({ ...settings, totalRounds: Number(e.target.value) })} />
+        {/* Nombre de rounds avec le bon style */}
+        <div className="row compact" style={{ display: 'flex', justifyContent: 'center' }} >
+          <div className="input-block">
+            <input
+              type="number"
+              min={1}
+              max={50}
+              className="input-focus"
+              value={settings.totalRounds}
+              onChange={(e) =>
+                onChangeSettings({
+                  ...settings,
+                  totalRounds: Number(e.target.value),
+                })
+              }
+            />
+            <label>Rounds</label>
           </div>
         </div>
+
+        {/* Custom rounds */}
         <CustomSettings
           rounds={rounds}
-          onChange={(updated) => onChangeSettings({ ...settings, rounds: updated, totalRounds: updated.length })}
-          onStartAt={() => {}}
+          onChange={(updated) =>
+            onChangeSettings({
+              ...settings,
+              rounds: updated,
+              totalRounds: updated.length,
+            })
+          }
           onAddRound={() => {
-            const last = rounds[rounds.length - 1] ?? { workSeconds: settings.workSeconds, restSeconds: settings.restSeconds };
-            const next = [...rounds, { workSeconds: last.workSeconds, restSeconds: last.restSeconds }];
-            onChangeSettings({ ...settings, rounds: next, totalRounds: next.length });
+            const last =
+              rounds[rounds.length - 1] ?? {
+                workSeconds: settings.workSeconds,
+                restSeconds: settings.restSeconds,
+              };
+            const next = [
+              ...rounds,
+              {
+                workSeconds: last.workSeconds,
+                restSeconds: last.restSeconds,
+              },
+            ];
+            onChangeSettings({
+              ...settings,
+              rounds: next,
+              totalRounds: next.length,
+            });
           }}
         />
       </div>
     </div>
   );
 };
+
 
 export default App;
 
