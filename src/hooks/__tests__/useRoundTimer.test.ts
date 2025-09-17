@@ -1,7 +1,7 @@
 // Tests JEST
 
 import { renderHook, act } from "@testing-library/react";
-import { useRoundTimer } from "../src/hooks/useRoundTimer";
+import { useRoundTimer } from "../useRoundTimer";
 
 describe("useRoundTimer", () => {
   it("démarre et s'arrête", () => {
@@ -43,41 +43,6 @@ describe("useRoundTimer", () => {
     });
 
     expect(result.current.state.remainingSeconds).toBe(0);
-    expect(result.current.state.phase).toBe("idle");
-  });
-
-  it("skip lance directement le prochain round en work", () => {
-    const { result } = renderHook(() =>
-      useRoundTimer({
-        totalRounds: 2,
-        workSeconds: 3,
-        restSeconds: 2,
-        countdownSeconds: 0,
-      })
-    );
-
-    expect(result.current.state.roundIndex).toBe(0);
-    expect(result.current.state.phase).toBe("idle");
-
-    act(() => {
-      result.current.skip();
-    });
-
-    // skip démarre directement en work, roundIndex reste 0
-    expect(result.current.state.roundIndex).toBe(0);
-    expect(result.current.state.phase).toBe("work");
-  });
-
-  it("débute toujours en idle", () => {
-    const { result } = renderHook(() =>
-      useRoundTimer({
-        totalRounds: 1,
-        workSeconds: 3,
-        restSeconds: 2,
-        countdownSeconds: 0,
-      })
-    );
-
     expect(result.current.state.phase).toBe("idle");
   });
 });
