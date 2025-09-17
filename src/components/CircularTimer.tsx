@@ -7,7 +7,12 @@ interface CircularTimerProps {
   size?: number;
 }
 
-export const CircularTimer: React.FC<CircularTimerProps> = ({ remainingSeconds, totalSeconds, isRunning, size = 360 }) => {
+export const CircularTimer: React.FC<CircularTimerProps> = ({
+  remainingSeconds,
+  totalSeconds,
+  isRunning,
+  size = 360,
+}) => {
   const stroke = 14;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
@@ -23,7 +28,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({ remainingSeconds, 
   const dash = useMemo(() => `${c * progress} ${c}`, [c, progress]);
 
   const ticks = useMemo(() => {
-    const count = 60; // graduation façon horloge
+    const count = 60;
     const arr: React.ReactNode[] = [];
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * 2 * Math.PI - Math.PI / 2;
@@ -78,9 +83,7 @@ export const CircularTimer: React.FC<CircularTimerProps> = ({ remainingSeconds, 
         />
       </svg>
       <div className="circular__center">
-        {Math.floor(remainingSeconds / 60)
-          .toString()
-          .padStart(2, '0')}
+        {Math.floor(remainingSeconds / 60).toString().padStart(2, '0')}
         <span className="circular__colon">:</span>
         {(Math.round(remainingSeconds) % 60).toString().padStart(2, '0')}
       </div>

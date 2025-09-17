@@ -77,7 +77,6 @@ body {
   flex-direction: column;
   align-items: center;   // horizontalement centré
   justify-content: flex-start; // collé en haut
-  
 }
 
 /* Conteneur neutre */
@@ -93,7 +92,7 @@ body {
   align-items: center;
  }
 
-/* ✅ Variante pour la page réglages */
+ /* ✅ Variante pour la page réglages */
 .card--settings {
   height: auto;
   justify-content: flex-start;
@@ -166,39 +165,31 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 
 /* === Input + Label : largeur EXACTEMENT identique === */
 .input-block {
-  /* largeur de référence ; ajuste 3ch/4ch/5ch selon ton besoin */
-  --w: var(--field-w);            /* défini plus haut = calc(4ch + 20px) */
-  width: var(--w);                /* le parent fixe la largeur */
-  display: grid;                  /* grid = simple et robuste */
-  grid-template-rows: auto auto;  /* input puis label */
-  justify-items: stretch;         /* enfants prennent 100% de la largeur */
+  --w: var(--field-w);
+  width: var(--w);
+  display: grid;
+  grid-template-rows: auto auto;
+  justify-items: stretch;
   align-items: center;
   gap: 6px;
 }
 
-/* L’input occupe exactement --w, padding + border INCLUS */
-/* L’input occupe exactement la largeur du parent */
 .input-focus {
   box-sizing: border-box;
-  inline-size: auto;           /* ✅ largeur auto selon contenu */
-  min-width: 3ch;              /* garde un minimum */
-  max-width: var(--field-w);   /* pas plus large que prévu */
+  inline-size: auto;
+  min-width: 3ch;
+  max-width: var(--field-w);
   height: var(--input-h);
   padding: 0 6px;
   line-height: 1;
   text-align: center;
   font-size: clamp(24px, 7vw, 34px);
   font-weight: 800;
-
-  /* ❌ on retire pour éviter l'affichage "01" */
-  /* font-variant-numeric: tabular-nums; */
   letter-spacing: normal;
-
   background: #0f1326;
   border: 1px solid #2b3152;
   border-radius: 10px;
   color: var(--text);
-
   -moz-appearance: textfield;
   appearance: none;
 }
@@ -206,10 +197,9 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 .input-focus::-webkit-inner-spin-button,
 .input-focus::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-/* Le label fait EXACTEMENT la même largeur que l’input et peut aller à la ligne */
 .input-block label {
-  box-sizing: border-box;         /* même modèle que l’input */
-  inline-size: 100%;              /* = la même largeur que le parent (.input-block) */
+  box-sizing: border-box;
+  inline-size: 100%;
   padding: 6px 10px;
   border-radius: 6px;
   background: #2b3152;
@@ -220,23 +210,12 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   font-weight: 900;
   opacity: .95;
   text-align: center;
-
-  /* ➜ on RETIRE l’ellipse pour ne plus tronquer (“RO…”) */
-  white-space: normal;            /* autorise le retour à la ligne */
+  white-space: normal;
   overflow: visible;
   text-overflow: clip;
-
-  /* (optionnel) meilleur wrapping pour mots longs */
   overflow-wrap: anywhere;
 }
 
-/* Variantes utiles si tu veux des largeurs différentes par champ :
-.input-block[data-digits="3"] { --w: calc(3ch + 20px); }
-.input-block[data-digits="5"] { --w: calc(5ch + 20px); }
-*/
-
-
-/* Bouton reset rounds : même hauteur que l'input */
 .btn-reset-rounds {
   height: var(--input-h);
   width: var(--input-h);
@@ -265,18 +244,33 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   gap: 10px;
   position: relative;
 }
-.panel-actions { position: absolute; right: 24px; top: 24px; display: flex; gap: 8px; z-index: 5; pointer-events: auto; }
-.panel-actions .btn-icon { width: calc(var(--btn) * 0.7); height: calc(var(--btn) * 0.7); font-size: calc(var(--btn-fs) * 0.7); }
+
+/* ✅ toujours sous ROUND X/Y */
+.panel-actions {
+  position: static;
+  right: auto;
+  top: auto;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: var(--gap);
+}
+
+.panel-actions .btn-icon {
+  width: calc(var(--btn) * 0.7);
+  height: calc(var(--btn) * 0.7);
+  font-size: calc(var(--btn-fs) * 0.7);
+}
+
 .timer__phase { opacity: 0.95; font-weight: 900; font-size: clamp(16px, 4.5vw, 48px); letter-spacing: 2px; text-align: center; }
 .fullscreen .timer__phase { font-size: clamp(24px, 9vw, 96px); }
 .timer__rounds { opacity: 0.8; }
 .timer__circle { display: grid; place-items: center; margin: 6px 0 10px; }
 .timer__circle svg {
-  width: clamp(220px, 65vw, 400px); /* plus petit min et max */
+  width: clamp(220px, 65vw, 400px);
   height: auto;
 }
-
-
 
 .circular { position: relative; }
 .circular.running .circular__progress { stroke: var(--danger); filter: drop-shadow(0 0 12px rgba(255,90,122,0.35)); }
@@ -287,7 +281,7 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(62px, 12vw, 140px);
+  font-size: clamp(100px, 12vw, 140px);
   font-weight: 800;
   letter-spacing: 2px;
   white-space: nowrap;
@@ -297,7 +291,7 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 .settings { display: grid; gap: 12px; margin-top: 16px; }
 .custom__row {
   display: grid;
-  grid-template-columns: auto 1fr 1fr; /* 1 colonne fixe pour le bouton, 2 colonnes égales */
+  grid-template-columns: auto 1fr 1fr;
   gap: 16px;
   align-items: center;
   background: #111428;
@@ -305,21 +299,19 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   border-radius: 12px;
 }
 
-/* cellule round/pause = largeur égale */
 .custom__row .grow {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  width: 100%; /* prend la largeur dispo dans la grille */
+  width: 100%;
 }
 
-/* blocs valeur : même largeur et hauteur */
 .custom__row .preview-block {
-  width: 100%;          /* occupe toute la colonne */
-  min-width: 100px;     /* garde une largeur minimale identique */
-  height: 48px;         /* hauteur uniforme */
+  width: 100%;
+  min-width: 100px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -330,13 +322,11 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   text-align: center;
 }
 
-/* labels alignés aussi */
 .custom__row label {
   text-align: center;
   width: 100%;
 }
 
-/* bouton suppression */
 .custom__row .danger {
   padding: 0;
   display: flex;
@@ -347,7 +337,6 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
   background: #55222a;
   color: #fff;
 }
-
 
 .controls { display: flex; gap: calc(var(--gap) * 0.75); flex-wrap: wrap; justify-content: center; }
 .controls.controls--main { justify-content: center; gap: var(--gap); }
@@ -367,11 +356,6 @@ button.danger { background: var(--danger); color: #fff; width: var(--btn); }
 .fullscreen .card { width: 100%; height: 100%; max-width: none; display: grid; place-items: center; }
 .fullscreen .timer__circle { margin: 0; }
 .fullscreen .circular__center { font-size: clamp(100px, 23vw, 240px); }
-
-@media (max-width: 640px) {
-  .panel-actions { position: static; right: auto; top: auto; justify-content: center; width: 100%; margin-top: var(--gap); }
-}
-.fullscreen .panel-actions { position: static; right: auto; top: auto; justify-content: center; width: 100%; margin-top: var(--gap); }
 
 @media (max-width: 320px) {
   :root {
