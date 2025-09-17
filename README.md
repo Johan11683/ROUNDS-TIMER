@@ -20,15 +20,15 @@ Ce projet m’a permis de créer un outil fonctionnel pour mes entraînements to
 
 ## 🛠️ Stack utilisée
 
-REACT / VITE / SASS -> CURSOR
+REACT / VITE / SASS -> CURSOR + CHATGPT5
 
 ---
 
 ## 📖 Contexte
 
-- Projet réalisé pour un besoin personnel et également pour une première approche de CURSOR
-- Utilisation de **Cursor** comme assistant de développement : génération de fichiers, complétion et corrections rapides.  
-- Objectif : sortir rapidement une app fonctionnelle rapidement, tout en comprenant globalement et adaptant le code généré.  
+- Projet réalisé pour un besoin personnel et également pour une première approche de CURSOR et de travail avec l'ia
+- Utilisation de l'ia comme assistant de développement : génération de l'architecture des fichiers, complétion basique et corrections rapides.  
+- Objectif : sortir rapidement une app fonctionnelle rapidement, tout en comprenant globalement et adaptant le code généré.
 
 ---
 
@@ -45,3 +45,4 @@ npm run deploy
 ```
 🗓️ Statut : Projet fonctionnel et publié
 PROCHAINE ETAPE : modifier les sons et leur synchronisation
+
